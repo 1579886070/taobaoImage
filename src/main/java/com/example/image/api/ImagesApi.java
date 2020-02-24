@@ -109,7 +109,7 @@ public class ImagesApi {
     }
 
     /**
-     * 下载
+     * 下载图片
      *
      * @param id
      * @param model
