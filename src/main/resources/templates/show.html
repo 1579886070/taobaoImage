@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<meta name="keywords" content="淘宝/图文/抓取">
+<meta name="description" content="by-zhouxin">
+<head>
+    <meta charset="UTF-8">
+    <title>淘宝信息抓取</title>
+
+    <style type="text/css">
+        body {
+            text-align: center
+        }
+
+        .form {
+            margin: 0 auto;
+            /*width:400px;*/
+            /*height:100px;*/
+            /*border:1px solid #F00*/
+        }
+
+        img {
+            width: 50%;
+            height: 50%;
+        }
+
+        .table {
+            border-radius: 3px;
+            transition: .2s;
+            width: 800px;
+            height: 400px;
+            margin: 0 auto;
+            background: rgba(245, 248, 250, 1);
+        }
+
+        pre {
+            box-sizing: border-box;
+            /*以下样式是自动换行代码*/
+            white-space: pre-wrap; /* css-3 */
+            white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+        / white-space: -o-pre-wrap; /* Opera 7 */
+            word-wrap: break-word; /* Internet Explorer 5.5+ */
+            /*以上样式是自动换行代码，需要的加上，不需要的删除*/
+            overflow: auto;
+            font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            padding: 9.5px;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            line-height: 1.42857;
+            color: #333333;
+            word-break: break-all;
+            word-wrap: break-word;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            background-color: rgba(245, 248, 250, 1);
+        }
+    </style>
+</head>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<body>
+
+<h2>淘宝图片下载</h2>
+<input type="text" required="required" id="goodsId" th:value="${goodsId}">
+<button onclick="selectAll()">快速预览</button>
+<button onclick="download()">一键下载</button>
+
+<div class="form" th:if="${not #lists.isEmpty(detailsFigure)}">
+    <div class="form">
+        <h3>基本信息展示</h3>
+        商品id：<span th:text="${goodsDetailed.id}"></span>
+        <br>
+        标题：<span th:text="${goodsDetailed.title}"></span>
+        <br>
+        规格参数：
+        <pre th:text="${goodsDetailed.basicInfo}"></pre>
+        <table class="table" border="1">
+            <tr>
+                <th>轮播图展示</th>
+            </tr>
+            <tr th:each="image : ${goodsDetailed.images}">
+                <td><img th:src="${image}" th:alt="轮播图片"/></td>
+            </tr>
+        </table>
+        <hr/>
+    </div>
+    <hr/>
+    <table class="table" border="1">
+        <tr>
+            <th>详情图文展示</th>
+        </tr>
+        <tr th:each="detailsFigure : ${detailsFigure}">
+            <!--<td th:text="${u}"></td>-->
+            <td><img th:src="${detailsFigure}" th:alt="详情图片"/></td>
+        </tr>
+    </table>
+</div>
+</body>
+<script>
+    function download() {
+        var goodsId = document.getElementById("goodsId").value
+        var data = {id: goodsId};
+        $.ajax({
+            type: "get",
+            url: "/download",
+            data: data,
+            success: function (data) {
+                console.log(data);
+                if (data.code == 200) {
+                    alert("下载成功！")
+                } else {
+                    alert("下载失败！")
+                }
+
+            }
+        })
+    }
+
+    function selectAll() {
+        var goodsId = document.getElementById("goodsId").value
+        var data = {id: goodsId};
+        $.ajax({
+            type: "get",
+            url: "/",
+            data: data,
+            success: function (data) {
+                console.log(data);
+                location.href = "/?id=" + goodsId;
+            }
+        })
+    }
+</script>
+</html>
